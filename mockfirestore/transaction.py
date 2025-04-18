@@ -27,9 +27,9 @@ class Transaction:
         self._client = client
         self._max_attempts = max_attempts
         self._read_only = read_only
-        self._id = None
         self._write_ops = []
         self.write_results = None
+        self._id = generate_random_string()
 
     @property
     def in_progress(self):
