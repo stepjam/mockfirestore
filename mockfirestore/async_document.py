@@ -6,8 +6,8 @@ from mockfirestore.document import DocumentReference, DocumentSnapshot
 
 
 class AsyncDocumentReference(DocumentReference):
-    async def get(self) -> DocumentSnapshot:
-        return super().get()
+    async def get(self, transaction=None) -> DocumentSnapshot:
+        return super().get(transaction)
 
     async def delete(self):
         super().delete()
