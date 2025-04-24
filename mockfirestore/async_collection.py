@@ -15,9 +15,9 @@ class AsyncCollectionReference(CollectionReference):
             doc_ref._data, doc_ref._path, parent=doc_ref.parent
         )
 
-    async def get(self) -> list[DocumentSnapshot]:
+    async def get(self, transaction=None) -> list[DocumentSnapshot]:
         docs = []
-        async for i in self.stream():
+        async for i in self.stream(transaction):
             docs.append(i)
         return docs
 
