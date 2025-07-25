@@ -61,9 +61,12 @@ class AsyncQuery(Query):
                 )
 
             from mockfirestore.field_filter import CompositeFilter, FieldFilter
+            from google.cloud.firestore_v1.base_query import FieldFilter as GoogleFieldFilter
 
-            if isinstance(filter, (FieldFilter, CompositeFilter)):
-                if isinstance(filter, FieldFilter):
+            if isinstance(filter, (FieldFilter, CompositeFilter, GoogleFieldFilter)):
+                if isinstance(filter, GoogleFieldFilter):
+                    self._add_field_filter(filter.field_path, filter.op_string, filter.value)
+                elif isinstance(filter, FieldFilter):
                     self._add_field_filter(*filter.get_filter_tuple())
                 else:  # CompositeFilter
                     for filter_tuple in filter.get_filter_tuples():
