@@ -9,6 +9,7 @@ from mockfirestore._helpers import (
     get_by_path,
     set_by_path,
 )
+from mockfirestore.aggregation import AggregationQuery
 from mockfirestore.document import DocumentReference, DocumentSnapshot
 from mockfirestore.query import Query
 
@@ -122,3 +123,12 @@ class CollectionReference:
         for key in sorted(get_by_path(self._data, self._path)):
             doc_snapshot = self.document(key).get()
             yield doc_snapshot
+
+    def count(self) -> AggregationQuery:
+        return Query(self).count()
+
+    def sum(self, field: str) -> AggregationQuery:
+        return Query(self).sum(field)
+
+    def average(self, field: str) -> AggregationQuery:
+        return Query(self).average(field)

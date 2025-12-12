@@ -2,6 +2,7 @@ from collections.abc import AsyncIterator
 from typing import Any
 
 from mockfirestore._helpers import Timestamp, get_by_path
+from mockfirestore.async_aggregation import AsyncAggregationQuery
 from mockfirestore.async_document import AsyncDocumentReference
 from mockfirestore.async_query import AsyncQuery
 from mockfirestore.collection import CollectionReference
@@ -48,7 +49,7 @@ class AsyncCollectionReference(CollectionReference):
         op: str | None = None,
         value: Any | None = None,
         *,
-        filter: Any | None = None
+        filter: Any | None = None,
     ) -> AsyncQuery:
         """
         Supports both old and new filter syntax:
@@ -112,3 +113,12 @@ class AsyncCollectionReference(CollectionReference):
     ) -> AsyncQuery:
         query = AsyncQuery(self, end_at=(document_fields_or_snapshot, False))
         return query
+
+    def count(self, alias: str | None = None) -> AsyncAggregationQuery:
+        return AsyncQuery(self).count(alias=alias)
+
+    def sum(self, field: str, alias: str | None = None) -> AsyncAggregationQuery:
+        return AsyncQuery(self).sum(field=field, alias=alias)
+
+    def average(self, field: str, alias: str | None = None) -> AsyncAggregationQuery:
+        return AsyncQuery(self).average(field=field, alias=alias)

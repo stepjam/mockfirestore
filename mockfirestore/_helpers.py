@@ -4,7 +4,7 @@ import string
 from collections.abc import AsyncIterable, Iterator, Sequence
 from datetime import datetime as dt
 from functools import reduce
-from typing import Any, TypeVar
+from typing import Any, Optional, TypeVar, Union
 
 T = TypeVar("T")
 KeyValuePair = tuple[str, dict[str, Any]]
@@ -87,3 +87,9 @@ def get_document_iterator(
 
 async def consume_async_iterable(iterable: AsyncIterable[T]) -> list[T]:
     return [item async for item in iterable if item.exists]
+
+
+class AggregationResult:
+    def __init__(self, value: Union[int, float], alias: Optional[str] = None):
+        self.value = value
+        self.alias = alias

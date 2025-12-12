@@ -2,6 +2,7 @@ from collections.abc import AsyncIterator
 from typing import Any
 
 from mockfirestore._helpers import consume_async_iterable
+from mockfirestore.async_aggregation import AsyncAggregationQuery
 from mockfirestore.document import DocumentSnapshot
 from mockfirestore.query import Query
 
@@ -47,7 +48,7 @@ class AsyncQuery(Query):
         op: str | None = None,
         value: Any | None = None,
         *,
-        filter: Any | None = None
+        filter: Any | None = None,
     ) -> "AsyncQuery":
         """
         Supports both old and new filter syntax:
@@ -61,11 +62,15 @@ class AsyncQuery(Query):
                 )
 
             from mockfirestore.field_filter import CompositeFilter, FieldFilter
-            from google.cloud.firestore_v1.base_query import FieldFilter as GoogleFieldFilter
+            from google.cloud.firestore_v1.base_query import (
+                FieldFilter as GoogleFieldFilter,
+            )
 
             if isinstance(filter, (FieldFilter, CompositeFilter, GoogleFieldFilter)):
                 if isinstance(filter, GoogleFieldFilter):
-                    self._add_field_filter(filter.field_path, filter.op_string, filter.value)
+                    self._add_field_filter(
+                        filter.field_path, filter.op_string, filter.value
+                    )
                 elif isinstance(filter, FieldFilter):
                     self._add_field_filter(*filter.get_filter_tuple())
                 else:  # CompositeFilter
@@ -78,3 +83,16 @@ class AsyncQuery(Query):
 
         self._add_field_filter(field, op, value)
         return self
+
+    def count(self, alias: str | None = None) -> AsyncAggregationQuery:
+        return AsyncAggregationQuery(self, alias=alias, aggregation_type="count")
+
+    def sum(self, field: str, alias: str | None = None) -> AsyncAggregationQuery:
+        return AsyncAggregationQuery(
+            self, field=field, alias=alias, aggregation_type="sum"
+        )
+
+    def average(self, field: str, alias: str | None = None) -> AsyncAggregationQuery:
+        return AsyncAggregationQuery(
+            self, field=field, alias=alias, aggregation_type="avg"
+        )
