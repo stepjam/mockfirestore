@@ -1,9 +1,10 @@
 from collections.abc import Callable, Iterable, Iterator
 from itertools import islice, tee
-from typing import Any
+from typing import Any, Optional
 
 from mockfirestore._helpers import T
 from mockfirestore.document import DocumentSnapshot
+from mockfirestore.aggregation import AggregationQuery
 
 
 class Query:
@@ -247,3 +248,12 @@ class Query:
             return f(x, y)
 
         return _comp_func
+
+    def count(self, alias: Optional[str] = None) -> "AggregationQuery":
+        return AggregationQuery(self, alias=alias, aggregation_type="count")
+
+    def sum(self, field: str | Iterable[str], alias: Optional[str] = None) -> "AggregationQuery":
+        return AggregationQuery(self, field=field, alias=alias, aggregation_type="sum")
+
+    def average(self, field: str | Iterable[str], alias: Optional[str] = None) -> "AggregationQuery":
+        return AggregationQuery(self, field=field, alias=alias, aggregation_type="avg")
